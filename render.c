@@ -4,9 +4,6 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 
-const int INIT_WIDTH = 1920;
-const int INIT_HEIGHT = 1080;
-
 void render_cell(SDL_Renderer *renderer, int x, int y, int state)
 {
     SDL_Rect cell;
@@ -68,8 +65,21 @@ void event_loop(SDL_Renderer *renderer, Matrix *board)
     }
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+
+    int INIT_WIDTH;
+    int INIT_HEIGHT;
+    if (argc != 3)
+    {
+        INIT_WIDTH = 1920;
+        INIT_HEIGHT = 1080;
+    }
+    else
+    {
+        INIT_WIDTH = atoi(argv[1]);
+        INIT_WIDTH = atoi(argv[2]);
+    }
     srand(time(0));
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("Game of life", 0, 0, INIT_WIDTH, INIT_HEIGHT, SDL_WINDOW_SHOWN);
