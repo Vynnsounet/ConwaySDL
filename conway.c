@@ -1,17 +1,5 @@
 #include "conway.h"
 
-void print_mat(Matrix *m)
-{
-    for (int i = 0; i < m->rows; i++)
-    {
-        for (int j = 0; j < m->cols; j++)
-        {
-            printf("%s ", MAT_AT(m, i, j) ? "\033[38;255;0;0;0m#\033[0m" : "\033[38;0;0;0;0m.\033[0m");
-        }
-        printf("\n");
-    }
-}
-
 Matrix *alloc_board(int rows, int cols)
 {
     Matrix *m = malloc(sizeof(Matrix));
@@ -46,25 +34,34 @@ void init_board(Matrix *board, int cell_number)
     shuffle(board->data, board->cols * board->rows);
 }
 
-int in_board(Matrix *board, int i, int j)
-{
-    return i >= 0 && i < board->rows && j >= 0 && j < board->cols;
-}
-
 int survive_state(int state, int nb_neighbours)
 {
     return (nb_neighbours == 2 && state) || nb_neighbours == 3;
+}
+
+void extend_borders(Matrix *board, int tab[2])
+{
+    if (tab[0] < 0)
+        tab[0] = board->rows - 1;
+    if (tab[0] >= board->rows)
+        tab[0] = 0;
+
+    if (tab[1] < 0)
+        tab[1] = board->cols - 1;
+    if (tab[1] >= board->cols)
+        tab[1] = 0;
 }
 
 int count_neighbours(Matrix *board, int i, int j)
 {
     int coordinates[8][2] = {{i - 1, j - 1}, {i, j - 1},     {i + 1, j - 1}, {i - 1, j},
                              {i + 1, j},     {i - 1, j + 1}, {i, j + 1},     {i + 1, j + 1}};
-    int c = 0;
+    int x, y, c = 0;
     for (int i = 0; i < 8; i++)
     {
-        int x = coordinates[i][0], y = coordinates[i][1];
-        if (in_board(board, x, y) && MAT_AT(board, x, y))
+        extend_borders(board, coordinates[i]);
+        x = coordinates[i][0], y = coordinates[i][1];
+        if (MAT_AT(board, x, y))
             c++;
     }
     return c;

@@ -5,3 +5,4 @@ all:
 
 clean:
 	rm -f conway
+	rm -f *.o
